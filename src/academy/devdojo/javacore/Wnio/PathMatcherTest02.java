@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-class ListAllJavaFiles extends SimpleFileVisitor<Path> {
+class FindClassesAndJavaFiles extends SimpleFileVisitor<Path> {
+    PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*{Test*}.{class,java}");
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        System.out.println(file.getFileName());
-        if (file.getFileName().toString().endsWith(".java")) {
+        if (matcher.matches(file)) {
             System.out.println(file.getFileName());
         }
         return FileVisitResult.CONTINUE;
     }
 }
-public class SimpleFileVisitorTest01 {
+public class PathMatcherTest02 {
     public static void main(String[] args) throws IOException {
-        Path path = Paths.get(".");
-        Files.walkFileTree(path, new ListAllJavaFiles());
+        Path root = Paths.get(".");
+        Files.walkFileTree(root, new FindClassesAndJavaFiles());
     }
 }
